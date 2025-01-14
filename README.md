@@ -1,39 +1,111 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+## Installation
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
+Add the following line to your `pubspec.yaml` file:
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
+```yaml
+dependencies:
+  customized_org_chart: ^0.0.1
 ```
 
-## Additional information
+Then run `flutter pub get` to install the package.
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+## Example
+
+Here is a simple example of how to use the `customized_org_chart` package:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:customized_org_chart/customized_org_chart.dart';
+
+void main() {
+    runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+
+    final orgChartController = OrgChartController<Map<dynamic, dynamic>>(
+    items: [
+      {"title": 'CEO', "id": '1', "to": null},
+      {
+        "title": 'HR Manager: John',
+        "widget": Container(color: Colors.green, height: 50, width: 50),
+        "id": '2',
+        "to": '1',
+      },
+      {
+        "title": 'HR Officer: Jane',
+        "id": '3',
+        "to": '2',
+      },
+      {
+        "title": 'Project Manager: Test',
+        "id": '4',
+        "to": '1',
+      },
+    ],
+    idProvider: (data) => data["id"],
+    toProvider: (data) => data["to"],
+    toSetter: (data, newID) => data["to"] = newID,
+    orientation: OrgChartOrientation.topToBottom,
+    spacing: 100,
+  );
+
+    @override
+    Widget build(BuildContext context) {
+        return MaterialApp(
+            home: Scaffold(
+                appBar: AppBar(
+                    title: Text('Customized Org Chart Example'),
+                ),
+                body: OrgChart(
+                controller: orgChartController,
+                isDraggable: false,
+                cornerRadius: 10,
+                uniqueLineStyles: {
+                    _uniqueNodeLine(): LineStyle(
+                    color: Colors.grey,
+                    strokeWidth: 3,
+                    isDashed: true,
+                    dashSpace: 3,
+                    )
+                },
+                builder: (details) {
+                    return Container(
+                        color: Colors.red,
+                        width: 100,
+                        height: 100,
+                        child: Column(
+                            children: [
+                                Text(details.item["title"]),
+                                FilledButton(
+                                    onPressed: () {
+                                    details.hideNodes(!details.nodesHidden);
+                                    },
+                                    child: Text(details.nodesHidden ? "show" : "hide"),
+                                )
+                            ],
+                        ),
+                    );
+                }
+                ),
+            ),
+        );
+    }
+
+    Node<Map<dynamic, dynamic>> _uniqueNodeLine() {
+    final node = orgChartController
+        .getAllNodes()
+        .singleWhere((e) => e.data["id"] == "4");
+
+    return node;
+  }
+}
+```
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request on GitHub.
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for more details.
