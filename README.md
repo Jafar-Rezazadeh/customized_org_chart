@@ -5,9 +5,9 @@ Add the following line to your `pubspec.yaml` file:
 ```yaml
 dependencies:
   customized_org_chart: 
-		git:
-			url:
-			ref:master
+   git:
+    url:
+    ref:master
 ```
 
 Then run `flutter pub get` to install the package.
