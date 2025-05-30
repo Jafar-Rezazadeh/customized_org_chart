@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
 
     final orgChartController = OrgChartController<Map<dynamic, dynamic>>(
     items: [
-      {"title": 'CEO', "id": '1', "to": null},
+      {"title": 'CEO', "id": '1', "to": null}, // IMPORTANT the root item parent should be null
       {
         "title": 'HR Manager: John',
         "widget": Container(color: Colors.green, height: 50, width: 50),
