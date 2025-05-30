@@ -4,7 +4,10 @@ Add the following line to your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  customized_org_chart: ^0.0.1
+  customized_org_chart:
+    git:
+      url: https://github.com/Jafar-Rezazadeh/customized_org_chart.git
+      ref: master
 ```
 
 Then run `flutter pub get` to install the package.
@@ -50,49 +53,51 @@ class MyApp extends StatelessWidget {
     spacing: 100,
   );
 
-    @override
-    Widget build(BuildContext context) {
-        return MaterialApp(
-            home: Scaffold(
-                appBar: AppBar(
-                    title: Text('Customized Org Chart Example'),
-                ),
-                body: OrgChart(
-                controller: orgChartController,
-                isDraggable: false,
-                cornerRadius: 10,
-                uniqueLineStyles: {
-                    _uniqueNodeLine(): LineStyle(
-                    color: Colors.grey,
-                    strokeWidth: 3,
-                    isDashed: true,
-                    dashSpace: 3,
-                    )
-                },
-                builder: (details) {
-                    return Container(
-                        color: Colors.red,
-                        width: 100,
-                        height: 100,
-                        child: Column(
-                            children: [
-                                Text(details.item["title"]),
-                                FilledButton(
-                                    onPressed: () {
-                                    details.hideNodes(!details.nodesHidden);
-                                    },
-                                    child: Text(details.nodesHidden ? "show" : "hide"),
-                                )
-                            ],
-                        ),
-                    );
-                }
-                ),
-            ),
-        );
-    }
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Customized Org Chart Example'),
+        ),
+        body: CustomOrgChart(
+          controller: orgChartController,
+          isDraggable: false,
+          cornerRadius: 10,
+          uniqueLineStyles: {
+            _uniqueNodeLine(): LineStyle(
+              color: Colors.grey,
+              strokeWidth: 3,
+              isDashed: true,
+              dashSpace: 3,
+            )
+          },
+          builder: (details) => _chartItem(details),
+        ),
+      ),
+    );
+  }
 
-    Node<Map<dynamic, dynamic>> _uniqueNodeLine() {
+  Widget _chartItem(NodeBuilderDetails<Map<dynamic, dynamic>> details) {
+    return Container(
+      color: Colors.red,
+      width: 100,
+      height: 100,
+      child: Column(
+        children: [
+          Text(details.item["title"]),
+          FilledButton(
+            onPressed: () {
+              details.hideNodes(!details.nodesHidden);
+            },
+            child: Text(details.nodesHidden ? "show" : "hide"),
+          )
+        ],
+      ),
+    );
+  }
+
+  OrgNode<Map<dynamic, dynamic>> _uniqueNodeLine() {
     final node = orgChartController
         .getAllNodes()
         .singleWhere((e) => e.data["id"] == "4");
